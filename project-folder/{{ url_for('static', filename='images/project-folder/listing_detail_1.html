@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spacious 4-Berth Caravan | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">RentMyCaravan.io</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="listings.html">View Caravans</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Create Account</a>
+        </div>
+    </nav>
+
+    <main class="listing-detail">
+        <div class="listing-container">
+            <div class="listing-image">
+                <div class="gallery-container">
+                    <button class="gallery-btn prev-btn">❮</button>
+                    <div class="gallery-images">
+                        <img src="images/caravan1.jpg" alt="Exterior view" class="active">
+                        <img src="images/caravan1-interior1.jpg" alt="Living area" >
+                        <img src="images/caravan1-interior2.jpg" alt="Kitchen view">
+                        <img src="images/caravan1-interior3.jpg" alt="Bedroom view">
+                    </div>
+                    <button class="gallery-btn next-btn">❯</button>
+                </div>
+                <div class="gallery-dots"></div>
+            </div>
+            <div class="listing-info">
+                <h1>Spacious 4-Berth with Sea View</h1>
+                <p class="price">£80/day</p>
+                <p>Total: <span id="total-price">£0</span></p>
+                <p class="small">(£95 per night)</p>
+                <p class="location">📍 Lake District</p>
+                
+                <div class="features">
+                    <h2>Features</h2>
+                    <ul>
+                        <li>Sleeps 4 people</li>
+                        <li>Full kitchen facilities</li>
+                        <li>Shower and toilet</li>
+                        <li>Air conditioning</li>
+                        <li>Outdoor awning</li>
+                    </ul>
+                </div>
+
+                <div class="description">
+                    <h2>Description</h2>
+                    <p>Perfect for outdoor adventures, this off-road capable caravan offers comfort and flexibility for your next trip. Features stunning sea views from its premium locations.</p>
+                </div>
+
+                <div class="booking-form" id="bookingForm" style="display: none;">
+                    <h2>Book This Caravan</h2>
+                    <form onsubmit="processBooking(event)">
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" required min="">
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                        <div class="form-group">
+                            <p>Total Price: <span id="booking-total">£0</span></p>
+                        </div>
+                        <button type="submit" class="btn-primary">Confirm Booking</button>
+                        <button type="button" class="btn-secondary" onclick="hideBookingForm()">Cancel</button>
+                    </form>
+                </div>
+                <button class="btn-primary booking-btn" onclick="showBookingForm()">Book Now</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RentMyCaravan.io</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.gallery-images img');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentIndex = 0;
+
+        // Preload images for smoother transitions
+        images.forEach(img => {
+            const newImg = new Image();
+            newImg.src = img.src;
+        });
+
+        function showImage(index) {
+            images[currentIndex].classList.remove('active');
+            currentIndex = index;
+            images[currentIndex].classList.add('active');
+        }
+
+        function nextImage() {
+            const nextIndex = (currentIndex + 1) % images.length;
+            showImage(nextIndex);
+        }
+
+        function prevImage() {
+            const prevIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(prevIndex);
+        }
+
+        prevBtn.addEventListener('click', prevImage);
+        nextBtn.addEventListener('click', nextImage);
+
+        const bookingForm = document.getElementById('bookingForm');
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const bookingTotal = document.getElementById('booking-total');
+
+        function showBookingForm() {
+            bookingForm.style.display = 'block';
+        }
+
+        function hideBookingForm() {
+            bookingForm.style.display = 'none';
+        }
+
+        function processBooking(event) {
+            event.preventDefault();
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+            const days = (endDate - startDate) / (1000 * 60 * 60 * 24);
+            if (days > 0) {
+                bookingTotal.textContent = `£${days * 95}`;
+            } else {
+                alert('Invalid date range');
+            }
+        }
+    });
+    </script>
+</body>
+</html>

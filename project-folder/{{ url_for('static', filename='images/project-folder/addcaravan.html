@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Caravan | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">RentMyCaravan.io</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="listings.html">View Caravans</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Create Account</a>
+        </div>
+    </nav>
+
+    <main class="add-caravan-form">
+        <h1>Add New Caravan</h1>
+        <form id="addCaravanForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="make">Make</label>
+                <input type="text" id="make" name="make" required>
+            </div>
+
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price per day (£)</label>
+                <input type="number" id="price" name="price" required min="0">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Vehicle Image</label>
+                <input type="file" id="image" name="image" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Add Caravan</button>
+        </form>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RentMyCaravan.io</p>
+    </footer>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const newCaravan = {
+                id: Date.now(), // Generate unique ID
+                title: `${formData.get('make')} ${formData.get('model')}`,
+                location: formData.get('location'),
+                price: parseInt(formData.get('price')),
+                description: formData.get('description')
+            };
+
+            // Handle image upload
+            const imageFile = form.image.files[0];
+            if (imageFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    newCaravan.image = e.target.result;
+                    saveCaravan(newCaravan);
+                };
+                reader.readAsDataURL(imageFile);
+            } else {
+                saveCaravan(newCaravan);
+            }
+        }
+
+        function saveCaravan(caravan) {
+            // Get existing caravans from localStorage
+            const caravans = JSON.parse(localStorage.getItem('caravans')) || [];
+            
+            // Add new caravan
+            caravans.push(caravan);
+            
+            // Save back to localStorage
+            localStorage.setItem('caravans', JSON.stringify(caravans));
+            
+            // Show success message and redirect
+            alert('Caravan added successfully!');
+            window.location.href = 'manage-caravans.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caravan Details | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        // ...existing navigation code...
+    </nav>
+
+    <main class="listing-detail">
+        <div class="listing-container" id="caravanDetail">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const caravan = JSON.parse(localStorage.getItem('selectedCaravan'));
+            if (!caravan) {
+                window.location.href = 'listings.html';
+                return;
+            }
+
+            const detailHTML = `
+                <div class="listing-image">
+                    <img src="${caravan.image || 'images/default-caravan.jpg'}" alt="${caravan.title}">
+                </div>
+                <div class="listing-info">
+                    <h1>${caravan.title}</h1>
+                    <p class="price">£${caravan.price}/day</p>
+                    <p class="location">📍 ${caravan.location}</p>
+                    <div class="description">
+                        <p>${caravan.description}</p>
+                    </div>
+                    <button class="btn-primary" onclick="showBookingForm()">Book Now</button>
+                </div>
+            `;
+
+            document.getElementById('caravanDetail').innerHTML = detailHTML;
+        });
+    </script>
+
+    <footer>
+        <p>&copy; 2025 RentMyCaravan.io</p>
+    </footer>
+</body>
+</html>

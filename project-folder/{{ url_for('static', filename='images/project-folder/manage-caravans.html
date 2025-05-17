@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Caravans | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">RentMyCaravan.io</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="listings.html">View Caravans</a>
+            <button onclick="logoutUser()" class="btn-logout">Logout</button>
+        </div>
+    </nav>
+
+    <main class="manage-container">
+        <h1>Manage My Caravans</h1>
+        <div class="manage-actions">
+            <a href="addcaravan.html" class="btn-primary">Add New Caravan</a>
+            <a href="listings.html" class="btn-secondary">View All Listings</a>
+        </div>
+        <div id="caravanList" class="caravan-list">
+            <!-- Caravans will be rendered here -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RentMyCaravan.io</p>
+    </footer>
+
+    <script>
+        // Check login status
+        if (!localStorage.getItem('currentUser')) {
+            window.location.href = 'login.html';
+        }
+
+        function renderCaravans() {
+            const caravanList = document.getElementById('caravanList');
+            const caravans = JSON.parse(localStorage.getItem('caravans')) || [];
+            
+            if (caravans.length === 0) {
+                caravanList.innerHTML = '<p class="no-caravans">No caravans added yet. Click "Add New Caravan" to get started.</p>';
+                return;
+            }
+
+            let html = '';
+            caravans.forEach(caravan => {
+                html += `
+                    <div class="caravan-card" data-id="${caravan.id}">
+                        <img src="${caravan.image || 'images/default-caravan.jpg'}" alt="${caravan.title}">
+                        <div class="caravan-info">
+                            <h3>${caravan.title}</h3>
+                            <p><strong>Location:</strong> ${caravan.location}</p>
+                            <p><strong>Price:</strong> £${caravan.price}/day</p>
+                            <p>${caravan.description}</p>
+                        </div>
+                        <div class="caravan-actions">
+                            <button onclick="editCaravan(${caravan.id})" class="btn-secondary">Edit</button>
+                            <button onclick="deleteCaravan(${caravan.id})" class="btn-danger">Delete</button>
+                        </div>
+                    </div>
+                `;
+            });
+            caravanList.innerHTML = html;
+        }
+
+        function editCaravan(id) {
+            // Store the ID of the caravan being edited
+            localStorage.setItem('editCaravanId', id);
+            // Redirect to edit page
+            window.location.href = 'editcaravan.html';
+        }
+
+        function deleteCaravan(id) {
+            if (confirm('Are you sure you want to delete this caravan?')) {
+                let caravans = JSON.parse(localStorage.getItem('caravans')) || [];
+                caravans = caravans.filter(caravan => caravan.id !== id);
+                localStorage.setItem('caravans', JSON.stringify(caravans));
+                renderCaravans();
+            }
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', renderCaravans);
+    </script>
+</body>
+</html>

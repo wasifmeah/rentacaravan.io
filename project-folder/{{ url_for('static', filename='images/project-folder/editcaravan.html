@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Caravan | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">RentMyCaravan.io</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="listings.html">View Caravans</a>
+            <button onclick="logoutUser()" class="btn-logout">Logout</button>
+        </div>
+    </nav>
+
+    <main class="edit-form-container">
+        <h1>Edit Caravan</h1>
+        <form id="editCaravanForm" onsubmit="handleEdit(event)">
+            <div class="form-group">
+                <label for="make">Make</label>
+                <input type="text" id="make" name="make" required>
+            </div>
+
+            <div class="form-group">
+                <label for="model">Model</label>
+                <input type="text" id="model" name="model" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price per day (£)</label>
+                <input type="number" id="price" name="price" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">New Image (optional)</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <button type="button" onclick="window.location.href='manage-caravans.html'" class="btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // Load caravan data
+        document.addEventListener('DOMContentLoaded', () => {
+            const editId = localStorage.getItem('editCaravanId');
+            if (!editId) {
+                window.location.href = 'manage-caravans.html';
+                return;
+            }
+
+            const caravans = JSON.parse(localStorage.getItem('caravans')) || [];
+            const caravan = caravans.find(c => c.id === parseInt(editId));
+            
+            if (caravan) {
+                document.getElementById('make').value = caravan.make || '';
+                document.getElementById('model').value = caravan.model || '';
+                document.getElementById('location').value = caravan.location || '';
+                document.getElementById('price').value = caravan.price || '';
+                document.getElementById('description').value = caravan.description || '';
+            }
+        });
+
+        function handleEdit(event) {
+            event.preventDefault();
+            const editId = localStorage.getItem('editCaravanId');
+            const form = event.target;
+            const formData = new FormData(form);
+
+            const caravans = JSON.parse(localStorage.getItem('caravans')) || [];
+            const index = caravans.findIndex(c => c.id === parseInt(editId));
+
+            if (index !== -1) {
+                const imageFile = form.image.files[0];
+                const updatedCaravan = {
+                    ...caravans[index],
+                    make: formData.get('make'),
+                    model: formData.get('model'),
+                    title: `${formData.get('make')} ${formData.get('model')}`,
+                    location: formData.get('location'),
+                    price: parseInt(formData.get('price')),
+                    description: formData.get('description')
+                };
+
+                if (imageFile) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        updatedCaravan.image = e.target.result;
+                        saveUpdatedCaravan(caravans, index, updatedCaravan);
+                    };
+                    reader.readAsDataURL(imageFile);
+                } else {
+                    saveUpdatedCaravan(caravans, index, updatedCaravan);
+                }
+            }
+        }
+
+        function saveUpdatedCaravan(caravans, index, updatedCaravan) {
+            caravans[index] = updatedCaravan;
+            localStorage.setItem('caravans', JSON.stringify(caravans));
+            alert('Caravan updated successfully!');
+            window.location.href = 'manage-caravans.html';
+        }
+    </script>
+</body>
+</html>

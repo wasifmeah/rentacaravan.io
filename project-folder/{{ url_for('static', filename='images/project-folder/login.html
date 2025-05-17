@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="js/auth.js" defer></script>
+    <script>
+        // User storage and authentication functions
+        function createUser(email, password) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const existingUser = users.find(user => user.email === email);
+            
+            if (existingUser) {
+                throw new Error('User already exists');
+            }
+
+            const newUser = {
+                id: Date.now(),
+                email,
+                password: password // In a real app, this should be hashed
+            };
+
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            return newUser;
+        }
+
+        function loginUser(email, password) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                throw new Error('Invalid email or password');
+            }
+
+            localStorage.setItem('currentUser', JSON.stringify({
+                id: user.id,
+                email: user.email
+            }));
+            
+            // Redirect to manage-caravans page after login
+            window.location.href = 'manage-caravans.html';
+            return user;
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        function updateNavigation() {
+            const navLinks = document.querySelector('.nav-links');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (currentUser) {
+                navLinks.innerHTML = `
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="listings.html">View Caravans</a>
+                    <a href="manage-caravans.html">Manage Caravans</a>
+                    <span class="user-email">${currentUser.email}</span>
+                    <a href="#" onclick="logoutUser()">Logout</a>
+                `;
+            } else {
+                navLinks.innerHTML = `
+                    <a href="index.html">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="listings.html">View Caravans</a>
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Create Account</a>
+                `;
+            }
+        }
+
+        function isLoggedIn() {
+            return localStorage.getItem('currentUser') !== null;
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const form = event.target;
+            const email = form.email.value;
+            const password = form.password.value;
+            const messageElement = document.getElementById('loginMessage');
+
+            try {
+                loginUser(email, password);
+                messageElement.textContent = 'Login successful!';
+                messageElement.style.color = 'green';
+            } catch (error) {
+                messageElement.textContent = error.message;
+                messageElement.style.color = 'red';
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">RentMyCaravan.io</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Create Account</a>
+        </div>
+    </nav>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Welcome Back</h2>
+            <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+                <p id="loginMessage" class="message"></p>
+            </form>
+            <p class="auth-footer">
+                Don't have an account? <a href="register.html">Register here</a>
+            </p>
+        </div>
+    </main><footer>
+      <p>&copy; 2025 RentMyCaravan.io</p>
+    </footer>
+</body>
+</html>

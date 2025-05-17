@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Glamping Pod | RentMyCaravan.io</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">RentMyCaravan.io</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="listings.html">View Caravans</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Create Account</a>
+        </div>
+    </nav>
+
+    <main class="listing-detail">
+        <div class="listing-container">
+            <div class="listing-image">
+                <div class="gallery-container">
+                    <button class="gallery-btn prev-btn">❮</button>
+                    <div class="gallery-images">
+                        <img src="images/caravan8.jpg" alt="Exterior view" class="active">
+                        <img src="images/caravan8-interior1.jpg" alt="Living area">
+                        <img src="images/caravan8-interior2.jpg" alt="Kitchen view">
+                        <img src="images/caravan8-interior3.jpg" alt="Bedroom view">
+                    </div>
+                    <button class="gallery-btn next-btn">❯</button>
+                </div>
+                <div class="gallery-dots"></div>
+            </div>
+            <div class="listing-info">
+                <h1>Luxury Glamping Pod</h1>
+                <p class="price">$150/day</p>
+                <p class="location">📍 Lake District</p>
+                
+                <div class="features">
+                    <h2>Features</h2>
+                    <ul>
+                        <li>Sleeps 2 people</li>
+                        <li>Premium interior</li>
+                        <li>Hot tub</li>
+                        <li>Smart TV</li>
+                        <li>Bluetooth sound system</li>
+                        <li>Private deck</li>
+                    </ul>
+                </div>
+
+                <div class="description">
+                    <h2>Description</h2>
+                    <p>Our most luxurious offering, perfect for romantic getaways. This modern glamping pod features high-end amenities and stunning lake views. Experience camping in ultimate comfort.</p>
+                </div>
+
+                <button class="btn-primary booking-btn">Book Now</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 RentMyCaravan.io</p>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.gallery-images img');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentIndex = 0;
+
+        images.forEach(img => {
+            const newImg = new Image();
+            newImg.src = img.src;
+        });
+
+        function showImage(index) {
+            images[currentIndex].classList.remove('active');
+            currentIndex = index;
+            images[currentIndex].classList.add('active');
+        }
+
+        function nextImage() {
+            const nextIndex = (currentIndex + 1) % images.length;
+            showImage(nextIndex);
+        }
+
+        function prevImage() {
+            const prevIndex = (currentIndex - 1 + images.length) % images.length;
+            showImage(prevIndex);
+        }
+
+        prevBtn.addEventListener('click', prevImage);
+        nextBtn.addEventListener('click', nextImage);
+    });
+    </script>
+</body>
+</html>

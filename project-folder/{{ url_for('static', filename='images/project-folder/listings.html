@@ -1,0 +1,72 @@
+<!-- Basic HTML Boilerplate for RentMyCaravan.io -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Available Caravans | RentMyCaravan.io</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">RentMyCaravan.io</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="listings.html">View Caravans</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Create Account</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="caravan-scroll-container">
+      <div class="caravan-scroll-content" id="caravanList">
+        <!-- Static listings -->
+        <div class="caravan-item">
+          <img src="images/caravan1.jpg" alt="Spacious 4-Berth">
+          <p>Spacious 4-Berth with sea view</p>
+          <p class="price">£85/day</p>
+          <a href="listing_detail_1.html" class="view-listing">View Details</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get dynamic caravans from localStorage
+      const dynamicCaravans = JSON.parse(localStorage.getItem('caravans')) || [];
+      const caravanList = document.getElementById('caravanList');
+
+      // Add dynamic caravans to the list
+      dynamicCaravans.forEach(caravan => {
+        const caravanElement = `
+          <div class="caravan-item">
+            <img src="${caravan.image || 'images/default-caravan.jpg'}" alt="${caravan.title}">
+            <p>${caravan.title}</p>
+            <p class="price">£${caravan.price}/day</p>
+            <p>${caravan.location}</p>
+            <a href="#" class="view-listing" onclick="viewCaravanDetails(${caravan.id})">View Details</a>
+          </div>
+        `;
+        caravanList.insertAdjacentHTML('beforeend', caravanElement);
+      });
+    });
+
+    function viewCaravanDetails(id) {
+      // Store selected caravan details for the detail page
+      const caravans = JSON.parse(localStorage.getItem('caravans')) || [];
+      const caravan = caravans.find(c => c.id === id);
+      if (caravan) {
+        localStorage.setItem('selectedCaravan', JSON.stringify(caravan));
+        window.location.href = 'listing_detail_dynamic.html';
+      }
+    }
+  </script>
+
+  <footer>
+    <p>&copy; 2025 RentMyCaravan.io</p>
+  </footer>
+</body>
+</html>
